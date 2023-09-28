@@ -1,14 +1,3 @@
-Call
-
-```cli
-wget {HTTPS-PATH to zipfolder with the bashscript}
-```
-
-```
-sudo unzip thefile.zip -d /opt/target_dir
-```
-
-```bash
 #!/usr/bin/env bash
 
 GF_ORIGINAL=grafana-kiosk.linux.armv7
@@ -19,18 +8,13 @@ GF_CONFIG=config-grafana.yml
 ETC_GRAFANA=/etc/grafana
 
 #check if the grafana kiosk binary exists
-if [ -e "$GF_ORIGINAL" ]; then
-	echo "$GF_ORIGINAL exists and is alive and well"
-	echo
-	
+if [ -e "$GF_ORIGINAL" ]; then	
 	#check if the grafana config file exists
 	if [ -e "$GF_CONFIG" ]; then
-		echo "$GF_CONFIG exists and is alive and well"
-		
 		#check if dir /etc/grafana exists
 		if [ ! -d "$ETC_GRAFANA" ]; then 
 			sudo mkdir ${ETC_GRAFANA}
-		
+			
 			#check if the grafana config file already exist in /etc/grafana
 			if [ ! -e "${ETC_GRAFANA}/${GF_CONFIG}" ]; then
 				sudo cp ${GF_CONFIG} ${ETC_GRAFANA}
@@ -63,7 +47,6 @@ if [ -e "$GF_ORIGINAL" ]; then
 					echo | sudo tee --append ${LXDE_HOME}/autostart
 					### sudo tee --append appends the line to the file if the file exists.
 					### if the file doesn't exist the file will be created and the line will be added
-					#echo "./${GF_USR_BIN_PATH}/${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}" | sudo tee --append ${LXDE_HOME}/autostart
 					echo "${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}" | sudo tee --append ${LXDE_HOME}/autostart
 				fi
 				
@@ -84,6 +67,7 @@ if [ -e "$GF_ORIGINAL" ]; then
 				echo "Neither of the following paths exist"
 				echo "  => /home/pi/.config/lxsession/LXDE-pi"
 				echo "  => /etc/xdg/lxsession/LXDE-pi"
+			fi
 			
 		else
 			echo "Directory $ETC_GRAFANA already exists"
@@ -101,4 +85,3 @@ else
 	echo "[MESSAGE] Make sure the file is in this directory"
 	exit 1
 fi
-```
