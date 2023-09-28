@@ -1,4 +1,4 @@
-
+```bash
 #!/usr/bin/env bash
 
 if (true) then 
@@ -6,3 +6,4 @@ if (true) then
 else 
   echo "Something Went Wrong"
 fi
+```
