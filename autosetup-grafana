@@ -52,7 +52,7 @@ if [ -e "$GF_ORIGINAL" ]; then
 					echo | sudo tee --append ${LXDE_HOME}/autostart
 					### sudo tee --append appends the line to the file if the file exists.
 					### if the file doesn't exist the file will be created and the line will be added
-					echo "./${GF_USR_BIN_PATH}/${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}" | sudo tee --append ${LXDE_HOME}/autostart
+					echo ".${GF_USR_BIN_PATH}/${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}" | sudo tee --append ${LXDE_HOME}/autostart
 				fi
 				
 			elif [ -d "$LXDE_DEFAULT" ]; then
@@ -65,7 +65,7 @@ if [ -e "$GF_ORIGINAL" ]; then
 					echo | sudo tee --append ${LXDE_DEFAULT}/autostart
 					### sudo tee --append appends the line to the file if the file exists.
 					### if the file doesn't exist the file will be created and the line will be added
-					echo "./${GF_USR_BIN_PATH}/${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}" | sudo tee --append ${LXDE_DEFAULT}/autostart
+					echo ".${GF_USR_BIN_PATH}/${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}" | sudo tee --append ${LXDE_DEFAULT}/autostart
 				fi
 				
 			else
