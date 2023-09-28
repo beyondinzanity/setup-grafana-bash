@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-if (true) then 
+$var = true
+
+if [ $var = true ] then 
   echo "Hello World"
 else 
   echo "Something Went Wrong"
