@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
-$var = true
+VAR=true
 
-if [ $var = true ] then 
-  echo "Hello World"
-else 
-  echo "Something Went Wrong"
+if [ ${VAR} = true ]; then 
+    echo "Hello World"
+elif [ ${VAR} = false ]; then 
+    echo "Goodbye World"
+    exit 1
+else
+    echo "Something went wrong, you died"
+    exit 1
 fi
