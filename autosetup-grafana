@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
 GF_ORIGINAL=grafana-kiosk.linux.armv7
+
 GF_NEW=grafana-kiosk
+
 GF_USR_BIN_PATH=/usr/bin
+
 GF_CONFIG=config-grafana.yml
 
 ETC_GRAFANA=/etc/grafana
