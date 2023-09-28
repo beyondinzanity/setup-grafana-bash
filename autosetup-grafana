@@ -72,6 +72,7 @@ if [ -e "$GF_ORIGINAL" ]; then
 				echo "Neither of the following paths exist"
 				echo "  => /home/pi/.config/lxsession/LXDE-pi"
 				echo "  => /etc/xdg/lxsession/LXDE-pi"
+			fi
 			
 		else
 			echo "Directory $ETC_GRAFANA already exists"
