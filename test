@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+```bash
+#comment
+if (true) then 
+  echo "Hello World"
+else 
+  echo "Something Went Wrong"
+fi
+```
