@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-```bash
 
 if (true) then 
   echo "Hello World"
 else 
   echo "Something Went Wrong"
 fi
-```
