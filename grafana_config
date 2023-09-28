@@ -1,0 +1,13 @@
+general:
+  kiosk-mode: full
+  #autofit: <bool>
+  #lxde: <bool>
+  #lxde-home: <lxde-home path>
+
+target:
+  login-method: local
+  username: <username>
+  password: <password>
+  #playlist: <bool>
+  URL: <dashboard or playlist URL>
+  ignore-certificate-errors: <bool>
