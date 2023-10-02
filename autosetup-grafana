@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+ 
 ###########################
 ####### COLOR CODES #######
 ###########################
@@ -9,247 +9,266 @@ BI_WHITE="\033[1;97m"
 GREEN="\033[1;92m"
 BLUE="\033[1;94m"
 NC="\033[0m"
-
-
+ 
+ 
 ############################################
 ####### DECLARE DEFAULT SETUP VALUES #######
 ############################################
 GF_ORIGINAL=grafana-kiosk-binary
-
+ 
 GF_NEW=grafana-kiosk
-
+ 
 GF_USR_BIN_PATH=/usr/bin
-
+ 
 GF_CONFIG=config-grafana.yml
-
+ 
 ETC_GRAFANA=/etc/grafana
-
+ 
 LXDE_HOME=/home/pi/.config/lxsession/LXDE-pi
-
+ 
 LXDE_DEFAULT=/etc/xdg/lxsession/LXDE-pi
-
-
+ 
+ 
 ########################################
 ####### DECLARE GLOBAL VARIABLES #######
 ########################################
 arrMissingDirs=()
 arrMissingFiles=()
 arrOverwriteFiles=()
-
-
+ 
+ 
 ######################
 ####### SCRIPT #######
 ######################
-
+ 
 function checkZipFile() {
-	if [ ! -e "$1" ]; then
-		echo -e "${RED}[ERROR] Missing file >>> $1${NC}"
-		exit 1
-	fi
-	
-	if [ ! -e "$2" ]; then
-		echo -e "${RED}[ERROR] Missing config file >>> $2${NC}"
-		exit 1
-	fi
+    if [ ! -e "$1" ]; then
+        echo -e "${RED}[ERROR] Missing file >>> $1${NC}"
+        exit 1
+    fi
+    
+    if [ ! -e "$2" ]; then
+        echo -e "${RED}[ERROR] Missing config file >>> $2${NC}"
+        exit 1
+    fi
 }
-
+ 
 function checkDirs() {
-	for dir in "$@"; do
-		#cho -e "${YELLOW}[Info] Checking path >>> $dir${NC}"
-		if [ ! -d "$dir" ]; then
-			#echo -e "	>> ${RED}Directory Missing${NC}"
-			arrMissingDirs+=($dir)
-		else
-			echo -e "${YELLOW}[INFO]${NC} Directory ${BI_WHITE}$dir${NC} already exists"
-			echo
-		fi
-	done
+    for dir in "$@"; do
+        #cho -e "${YELLOW}[Info] Checking path >>> $dir${NC}"
+        if [ ! -d "$dir" ]; then
+            #echo -e "  >> ${RED}Directory Missing${NC}"
+            arrMissingDirs+=($dir)
+        else
+            echo -e "${YELLOW}[INFO]${NC} Directory ${BI_WHITE}$dir${NC} already exists"
+            echo
+        fi
+    done
 }
-
+ 
 function checkFiles() {
-	if [ -e "${ETC_GRAFANA}/${GF_CONFIG}" ]; then
-		echo -e "${YELLOW}[INFO]${NC} File ${BI_WHITE}$GF_CONFIG${NC} already exists at location ${BI_WHITE}$ETC_GRAFANA${NC}"
-		echo -e ">> Do you want to overwrite this file? (y/n)?"
-		read ANSWER
-		if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
-			arrOverwriteFiles+=($ETC_GRAFANA/$GF_CONFIG)
-		else
-			echo 
-		fi
-	else
-		arrMissingFiles+=($ETC_GRAFANA/$GF_CONFIG)
-	fi
-	
-	if [ -e "${GF_USR_BIN_PATH}/${GF_NEW}" ]; then
-		echo -e "${YELLOW}[INFO]${NC} File ${BI_WHITE}$GF_NEW${NC} already exists at location ${BI_WHITE}$GF_USR_BIN_PATH${NC}"
-		echo -e ">> Do you want to overwrite this file? (y/n)?"
-		read ANSWER
-		if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
-			arrOverwriteFiles+=($GF_USR_BIN_PATH/$GF_NEW)
-		else
-			echo
-		fi
-	else
-		arrMissingFiles+=($GF_USR_BIN_PATH/$GF_NEW)
-	fi
+    if [ -e "${ETC_GRAFANA}/${GF_CONFIG}" ]; then
+        echo -e "${YELLOW}[INFO]${NC} File ${BI_WHITE}$GF_CONFIG${NC} already exists at location ${BI_WHITE}$ETC_GRAFANA${NC}"
+        echo -e ">> Do you want to overwrite this file? (y/n)?"
+        read ANSWER
+        if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+            arrOverwriteFiles+=($ETC_GRAFANA/$GF_CONFIG)
+        else
+            echo 
+        fi
+    else
+        arrMissingFiles+=($ETC_GRAFANA/$GF_CONFIG)
+    fi
+    
+    if [ -e "${GF_USR_BIN_PATH}/${GF_NEW}" ]; then
+        echo -e "${YELLOW}[INFO]${NC} File ${BI_WHITE}$GF_NEW${NC} already exists at location ${BI_WHITE}$GF_USR_BIN_PATH${NC}"
+        echo -e ">> Do you want to overwrite this file? (y/n)?"
+        read ANSWER
+        if [ "$ANSWER" != "${ANSWER#[Yy]}" ]; then
+            arrOverwriteFiles+=($GF_USR_BIN_PATH/$GF_NEW)
+        else
+            echo
+        fi
+    else
+        arrMissingFiles+=($GF_USR_BIN_PATH/$GF_NEW)
+    fi
 }
-
+ 
 function createMissingDirs() {
-	echo
-	echo -e "${YELLOW}[INFO]${NC} Creating missing directories"
-	
-	for dir in "${arrMissingDirs[@]}"; do
-		echo -e "	${BLUE}[CREATING]${NC} $dir"
-		sudo mkdir ${dir}
-	done
+    echo
+    echo -e "${YELLOW}[INFO]${NC} Creating missing directories"
+    
+    for dir in "${arrMissingDirs[@]}"; do
+        echo -e "   ${BLUE}[CREATING]${NC} $dir"
+        sudo mkdir ${dir}
+    done
 }
-
+ 
 function createMissingFiles() {
-	echo
-	echo -e "${YELLOW}[INFO]${NC} Creating missing files"
-	
-	for file in "${arrMissingFiles[@]}"; do
-		DIR_PATH="$(dirname "${file}")"
-		FILE_NAME="$(basename "${file}")"
-		echo -e "	${BLUE}[CREATING]${NC} $FILE_NAME at $DIR_PATH"
-		
-		if [ $FILE_NAME = $GF_CONFIG ]; then
-			sudo cp ${FILE_NAME} ${DIR_PATH}
-		fi
-		
-		if [ $FILE_NAME = $GF_NEW ]; then
-			sudo cp -p ${GF_ORIGINAL} "${DIR_PATH}/${FILE_NAME}"
-			sudo chmod 755 ${DIR_PATH}/${FILE_NAME}
-		fi
-		echo
-	done
+    echo
+    echo -e "${YELLOW}[INFO]${NC} Creating missing files"
+    
+    for file in "${arrMissingFiles[@]}"; do
+        DIR_PATH="$(dirname "${file}")"
+        FILE_NAME="$(basename "${file}")"
+        echo -e "   ${BLUE}[CREATING]${NC} $FILE_NAME at $DIR_PATH"
+        
+        if [ $FILE_NAME = $GF_CONFIG ]; then
+            sudo cp ${FILE_NAME} ${DIR_PATH}
+        fi
+        
+        if [ $FILE_NAME = $GF_NEW ]; then
+            sudo cp -p ${GF_ORIGINAL} "${DIR_PATH}/${FILE_NAME}"
+            sudo chmod 755 ${DIR_PATH}/${FILE_NAME}
+        fi
+        echo
+    done
 }
-
+ 
 function overwriteFiles() {
-	echo -e "${YELLOW}[INFO]${NC} Overwriting selected files"
-	
-	for file in "${arrOverwriteFiles[@]}"; do
-		DIR_PATH="$(dirname "${file}")"
-		FILE_NAME="$(basename "${file}")"
-		echo -e "	${BLUE}[OVERWRITING]${NC} ${BI_WHITE}$FILE_NAME${NC} at ${BI_WHITE}$DIR_PATH${NC}"
-		
-		if [ $FILE_NAME = $GF_CONFIG ]; then
-			sudo cp ${FILE_NAME} ${DIR_PATH}
-		fi
-		
-		if [ $FILE_NAME = $GF_NEW ]; then
-			sudo cp -p -f ${GF_ORIGINAL} "${DIR_PATH}/${FILE_NAME}"
-			sudo chmod 755 ${DIR_PATH}/${FILE_NAME}
-		fi
-		echo
-	done
+    echo -e "${YELLOW}[INFO]${NC} Overwriting selected files"
+    
+    for file in "${arrOverwriteFiles[@]}"; do
+        DIR_PATH="$(dirname "${file}")"
+        FILE_NAME="$(basename "${file}")"
+        echo -e "   ${BLUE}[OVERWRITING]${NC} ${BI_WHITE}$FILE_NAME${NC} at ${BI_WHITE}$DIR_PATH${NC}"
+        
+        if [ $FILE_NAME = $GF_CONFIG ]; then
+            sudo cp ${FILE_NAME} ${DIR_PATH}
+        fi
+        
+        if [ $FILE_NAME = $GF_NEW ]; then
+            sudo cp -p -f ${GF_ORIGINAL} "${DIR_PATH}/${FILE_NAME}"
+            sudo chmod 755 ${DIR_PATH}/${FILE_NAME}
+        fi
+        echo
+    done
 }
-
+ 
 ### append the following line to the end of the correct autostart file ###
 ### grafana-kiosk -c /etc/grafana/config-grafana.yml ###
 function setupAutostart() {
-	AUTO_STRING="${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}"
-	if [ -d "$1" ]; then
-		#check if file /autostart exists at /home/pi/.config/lxsession/LXDE-pi/
-		if [ -e "$1/autostart" ]; then
-			case `grep -Fx "$AUTO_STRING" "$1/autostart" >/dev/null; echo $?` in
-				0)
-					echo -e "${YELLOW}[INFO]${NC} Autostart has already been setup"
-					;;
-				1) 
-					# insert blank lines first
-					echo | sudo tee --append ${1}/autostart
-					echo | sudo tee --append ${1}/autostart
-					echo "$AUTO_STRING" | sudo tee --append ${1}/autostart
-					;;
-				2)
-					echo -e "${YELLOW}[INFO] Something went wrong when setting up autostart ${NC}"
-					;;
-			esac					
-			
-		fi
-		
-	elif [ -d "$2" ]; then
-		#check if file /autostart exists at /etc/xdg/lxsession/LXDE-pi
-		if [ -e "${2}/autostart" ]; then
-			case `grep -Fx "$AUTO_STRING" "${2}/autostart" >/dev/null; echo $?` in
-				0)
-					echo -e "${YELLOW}[INFO]${NC} Autostart has already been setup"
-					;;
-				1) 
-					# insert blank lines first
-					echo | sudo tee --append ${2}/autostart
-					echo | sudo tee --append ${2}/autostart
-					echo "$AUTO_STRING" | sudo tee --append ${2}/autostart
-					;;
-				2)
-					echo -e "${YELLOW}[INFO] Something went wrong when setting up autostart ${NC}"
-					;;
-			esac
-		fi
-		
-	else
-		echo -e "${YELLOW}[INFO] Neither of the following paths exist${NC}"
-		echo -e "	>>> ${RED}$1${NC}"
-		echo -e "	>>> ${RED}$2${NC}"
-	fi
+    AUTO_STRING="${GF_NEW} -c ${ETC_GRAFANA}/${GF_CONFIG}"
+    AUTO_UNCLUTTER="unclutter -idle 2"
+    if [ -d "$1" ]; then
+        #check if file /autostart exists at /home/pi/.config/lxsession/LXDE-pi/
+        if [ -e "$1/autostart" ]; then
+            case `grep -Fx "$AUTO_STRING" "$1/autostart" >/dev/null; echo $?` in
+                0)
+                    echo -e "${YELLOW}[INFO]${NC} Autostart has already been setup"
+                    ;;
+                1) 
+                    # insert blank lines first
+                    echo | sudo tee --append ${1}/autostart
+                    echo | sudo tee --append ${1}/autostart
+                    echo "$AUTO_STRING" | sudo tee --append ${1}/autostart
+                    echo
+                    echo "$AUTO_UNCLUTTER" | sudo tee --append ${2}/autostart
+                    ;;
+                2)
+                    echo -e "${YELLOW}[INFO] Something went wrong when setting up autostart ${NC}"
+                    ;;
+            esac                    
+            
+        fi
+        
+    elif [ -d "$2" ]; then
+        #check if file /autostart exists at /etc/xdg/lxsession/LXDE-pi
+        if [ -e "${2}/autostart" ]; then
+            case `grep -Fx "$AUTO_STRING" "${2}/autostart" >/dev/null; echo $?` in
+                0)
+                    echo -e "${YELLOW}[INFO]${NC} Autostart has already been setup"
+                    ;;
+                1) 
+                    # insert blank lines first
+                    echo | sudo tee --append ${2}/autostart
+                    echo | sudo tee --append ${2}/autostart
+                    echo "$AUTO_STRING" | sudo tee --append ${2}/autostart
+                    echo
+                    echo "$AUTO_UNCLUTTER" | sudo tee --append ${2}/autostart
+                    ;;
+                2)
+                    echo -e "${YELLOW}[INFO] Something went wrong when setting up autostart ${NC}"
+                    ;;
+            esac
+        fi
+        
+    else
+        echo -e "${YELLOW}[INFO] Neither of the following paths exist${NC}"
+        echo -e "   >>> ${RED}$1${NC}"
+        echo -e "   >>> ${RED}$2${NC}"
+    fi
 }
-
+ 
 function main() {
-	checkZipFile "$GF_ORIGINAL" "$GF_CONFIG"
-	checkDirs "$ETC_GRAFANA"
-	checkFiles
-	
-	CREATE_DIRS=false
-	CREATE_FILES=false
-	OVERWRITE_FILES=false
-	
-	if [ ${#arrMissingDirs[@]} -gt 0 ]; then
-		echo -e "${YELLOW}[INFO]${NC} Missing Directories"
-	
-		for dir in "${arrMissingDirs[@]}"; do
-			echo -e "	>>> ${RED}$dir ${NC}"
-		done
-		CREATE_DIRS=true
-	fi
-	
-	echo
-	
-	if [ ${#arrMissingFiles[@]} -gt 0 ]; then
-		echo -e "${YELLOW}[INFO]${NC} Missing Files"
-	
-		for file in "${arrMissingFiles[@]}"; do
-			echo -e "	>>> ${RED}$file ${NC}"
-		done
-		echo
-		CREATE_FILES=true
-	fi
-	
-	if [ ${#arrOverwriteFiles[@]} -gt 0 ]; then
-		echo -e "${YELLOW}[INFO]${NC} Selected files to overwrite"
-		
-		for file in "${arrOverwriteFiles[@]}"; do
-			echo -e "	>>> ${BI_WHITE}$file ${NC}"
-		done
-		OVERWRITE_FILES=true
-	fi
-	
-	if [ $CREATE_DIRS = true ]; then
-		createMissingDirs
-	fi
-
-	if [ $CREATE_FILES = true ]; then
-		createMissingFiles
-	fi
-	
-	if [ $OVERWRITE_FILES = true ]; then
-		overwriteFiles
-	fi
-	
-	setupAutostart "$LXDE_HOME" "$LXDE_DEFAULT"
-
-	echo
-	echo -e "${GREEN}[COMPLETE] ${NC}"
+    checkZipFile "$GF_ORIGINAL" "$GF_CONFIG"
+    checkDirs "$ETC_GRAFANA"
+    checkFiles
+    
+    CREATE_DIRS=false
+    CREATE_FILES=false
+    OVERWRITE_FILES=false
+    
+    if [ ${#arrMissingDirs[@]} -gt 0 ]; then
+        echo -e "${YELLOW}[INFO]${NC} Missing Directories"
+    
+        for dir in "${arrMissingDirs[@]}"; do
+            echo -e "   >>> ${RED}$dir ${NC}"
+        done
+        CREATE_DIRS=true
+    fi
+    
+    echo
+    
+    if [ ${#arrMissingFiles[@]} -gt 0 ]; then
+        echo -e "${YELLOW}[INFO]${NC} Missing Files"
+    
+        for file in "${arrMissingFiles[@]}"; do
+            echo -e "   >>> ${RED}$file ${NC}"
+        done
+        echo
+        CREATE_FILES=true
+    fi
+    
+    if [ ${#arrOverwriteFiles[@]} -gt 0 ]; then
+        echo -e "${YELLOW}[INFO]${NC} Selected files to overwrite"
+        
+        for file in "${arrOverwriteFiles[@]}"; do
+            echo -e "   >>> ${BI_WHITE}$file ${NC}"
+        done
+        OVERWRITE_FILES=true
+    fi
+    
+    if [ $CREATE_DIRS = true ]; then
+        createMissingDirs
+    fi
+ 
+    if [ $CREATE_FILES = true ]; then
+        createMissingFiles
+    fi
+    
+    if [ $OVERWRITE_FILES = true ]; then
+        overwriteFiles
+    fi
+    
+    setupAutostart "$LXDE_HOME" "$LXDE_DEFAULT"
+ 
+    echo
+    
+    case `dpkg -s unclutter >/dev/null; echo $?` in
+        0)
+            echo "Unclutter was already installed"
+            ;;
+        1) 
+            sudo apt install unclutter
+            ;;
+        2)
+            echo "what"
+            ;;
+    esac    
+    
+    echo
+    echo -e "${GREEN}[COMPLETE] ${NC}"
 }
-
+ 
 main
