@@ -1,7 +1,7 @@
 general:
   kiosk-mode: full
   #autofit: <bool>
-  #lxde: <bool>
+  lxde: true
   #lxde-home: <lxde-home path>
 
 target:
