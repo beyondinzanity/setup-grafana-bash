@@ -6,6 +6,7 @@
 wget {HTTPS-PATH to zipfolder with the bashscript}
 ```
 
+Ezample:
 ```bash
 wget https://github.com/beyondinzanity/setup-grafana-bash/archive/main.zip
 ```
@@ -14,6 +15,7 @@ wget https://github.com/beyondinzanity/setup-grafana-bash/archive/main.zip
 sudo unzip thefile.zip -d /opt/target_dir
 ```
 
+Example:
 ```bash
 sudo unzip setup-autosetup-grafana.zip -d ~/Desktop
 ```
