@@ -2,7 +2,7 @@
 
 <H2>Download the zip-folder</H2>
 
-You can either use the terminal to download the zip-folder or just 
+You can either use the terminal to download the zip-folder or just download it manually from the repo by clicking Download .ZIP
 ```bash
 wget https://github.com/<author>/<git-repo>/archive/<branch>.zip
 ```
