@@ -56,7 +56,7 @@ The other option is to manually go to the config file at the path `/etc/grafana`
 sudo nano config-grafana.yml
 ```
 
-If you want to update the binary, first remove the binary from the zip-folder where the script is located. Then instsall a new binary from the original Grafana repo https://github.com/grafana/grafana-kiosk
+If you want to update the binary, first remove the binary from the zip-folder where the script is located. Then install a new binary from the original Grafana repo https://github.com/grafana/grafana-kiosk
 then put the newly installed Grafana binary into the zip-folder and rename it to `grafana-kiosk-binary` just as the one was named before
 
 Now you just have to run the script again and do the same as when you want to update the config file with the script
