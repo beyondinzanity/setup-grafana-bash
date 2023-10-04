@@ -2,8 +2,9 @@
 
 <H2>Download the zip-folder</H2>
 
+You can either use the terminal to download the zip-folder or just 
 ```bash
-wget {HTTPS-PATH to zipfolder with the bashscript}
+wget https://github.com/<author>/<git-repo>/archive/<branch>.zip
 ```
 
 Example:
@@ -17,7 +18,7 @@ sudo unzip thefile.zip -d /opt/target_dir
 
 Example:
 ```bash
-sudo unzip setup-autosetup-grafana.zip -d ~/Desktop
+sudo unzip main.zip -d ~/Desktop
 ```
 
 -----------------------------------------------------------------------------------------------------------------------------
