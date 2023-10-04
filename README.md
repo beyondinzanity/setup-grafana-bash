@@ -6,7 +6,7 @@
 wget {HTTPS-PATH to zipfolder with the bashscript}
 ```
 
-Ezample:
+Example:
 ```bash
 wget https://github.com/beyondinzanity/setup-grafana-bash/archive/main.zip
 ```
